@@ -1,0 +1,555 @@
+<!--
+   music_one_point_o.html
+   
+   Copyright 2022 Mia <mia@mia-MacBookPro>
+   
+   This program is free software; you can redistribute it and/or modify
+   it under the terms of the GNU General Public License as published by
+   the Free Software Foundation; either version 2 of the License, or
+   (at your option) any later version.
+   
+   This program is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   GNU General Public License for more details.
+   
+   You should have received a copy of the GNU General Public License
+   along with this program; if not, write to the Free Software
+   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+   MA 02110-1301, USA.
+   
+
+The MIT License (MIT)
+
+Copyright (c) 2013 Keith William Horwood
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of
+this software and associated documentation files (the "Software"), to deal in
+the Software without restriction, including without limitation the rights to
+use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+the Software, and to permit persons to whom the Software is furnished to do so,
+subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+-->
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+
+<head>
+	<title>Mia Musical</title>
+	<meta http-equiv="content-type" content="text/html;charset=utf-8" />
+	<meta name="generator" content="Geany 1.38" />
+</head>
+
+<body>
+	<label for="Keys">Choose a Key</label>
+	<select name ="Keys" id="Keys">
+			<option>C</option>
+			<option>G</option>
+			<option>D</option>
+			<option>A</option>
+			<option>E</option>
+			<option>B</option>
+			<option>F#</option>
+			<option>C#</option>
+			<option>A#</option>
+			<option>B#</option>
+			<option>D#</option>
+			<option>E#</option>
+			<option>G#</option>
+			<option>F</option>
+			<option>Bb</option>
+			<option>Eb</option>
+			<option>Ab</option>
+			<option>Db</option>
+			<option>Gb</option>
+			<option>Cb</option>
+			<option>Fb</option>
+		</select>
+  <br> </br>
+	<label for="Mode">Choose a Mode</label>
+	<select name="Mode" id="Mode">
+		<option>Major/Ionian</option>
+		<option>Dorian</option>
+		<option>Phrygian</option>
+		<option>Lydian</option>
+		<option>Mixolydian</option>
+		<option>Natural Minor/Aeolian</option>
+    <option>Harmonic Minor</option>
+    <option>Melodic Minor</option>
+		<option>Locrian</option>
+	</select>
+  <br> </br>
+	<label for="ChrdNum">How many Chords?</label>
+	<select name="ChrdNum" id="ChrdNum">
+		<option>2</option>
+		<option>3</option>
+		<option>4</option>
+		<option>5</option>
+		<option>6</option>
+		<option>7</option>
+		<option>8</option>
+		<option>9</option>
+		<option>10</option>
+		<option>11</option>
+		<option>12</option>
+		<option>13</option>
+		<option>14</option>
+		<option>15</option>
+		<option>16</option>
+    <option>1000</option>
+    
+	</select>
+  <br></br>
+  	<label for="Ending">How would you like to end it? (Chord num must be greater than 2)</label>
+
+  <select name="Ending" id="Ending">
+    <option>Random Ending</option>
+		<option>PAC</option>
+		<option>IAC (Root Position)</option>
+		<option>IAC (Leading Tone)</option>
+		<option>HC</option>
+		<option>PC</option>
+    <option>mPC</option>
+		<option>DC</option>
+		
+    
+	</select>
+  <br> </br>
+  	<button onclick="updateScreen()">Lets Go!</button>
+  <br> </br>
+
+	
+	
+	<textarea id="textarea" name="textarea" rows="10" cols="50">
+      
+    </textarea>
+   <script src="audiosynth.js"></script> 
+	<script>
+    fetch('https://api.github.com/users/jameshibbard')
+  .then(res => res.json())
+  .then(json => console.log(json.public_repos));
+console.log("Hello!");
+
+		var tim = 0;
+		var placehold = 14;
+		var whatkey = 0;
+		var rand = 0;
+		var chords = "";
+		var key = 0;
+		var mode = 0;
+		var chdnum = 0;
+    var endng = "";
+    var flash = "";
+    var start = 0;
+    var soundnotes = [];
+    var trackchords = [];
+    var tempchdnum = 0;
+    var trackchordstwo = [];
+    var newtrackchords = [];
+    var testarray = [];
+		var ckey = [
+  ["F","G","A", "Bb", "C", "D", "E"],
+  ["Bb", "C", "D", "Eb","F","G","A" ],
+  [ "Eb","F","G","Ab","Bb", "C", "D" ],
+  ["Ab","Bb", "C", "Db", "Eb","F","G"],
+  [ "Db", "Eb","F","Gb","Ab","Bb", "C"],
+  ["Gb","Ab","Bb", "Cb", "Db", "Eb","F" ],
+  [ "Cb", "Db", "Eb","Fb", "Gb","Ab","Bb"],
+  ["C", "D", "E", "F", "G", "A", "B"],
+  ["G", "A", "B", "C", "D", "E", "F#"],
+  [ "D", "E", "F#","G", "A", "B", "C#" ],
+  ["A", "B", "C#", "D", "E", "F#", "G#"],
+  ["E", "F#", "G#","A", "B", "C#", "D#"],
+  [ "B", "C#", "D#", "E", "F#", "G#","A#" ],
+  ["F#", "G#","A#", "B", "C#", "D#", "E#" ],
+  ["C#", "D#", "E#", "F#", "G#","A#", "B#"],
+  
+];
+    var chromsh = 
+            ['A','A#','B','C','C#','D','D#','E','F','F#','G','G#', 'A','A#','B','C','C#','D','D#','E','F','F#','G','G#', 'A','A#','B','C','C#','D','D#','E','F','F#','G','G#','A','A#','B','C','C#','D','D#','E','F','F#','G','G#'];
+
+     // ["A","A#","B","C","C#","D","D#","E","F","F#","G","G#", "A","A#","B","C","C#","D","D#","E","F","F#","G","G#"];
+
+
+    var otherchroms = [  
+      ["A","Bb","B","C","Db","D","Eb","E","F","Gb","G","Ab"],
+      ["A","A#", "Bb","B","B#","Cb", "C","C#","Db","D","D#","Eb","E","E#","Fb","F","F#","Gb","G","G#", "Ab"],
+      ["C"]
+    ];
+   var memescales = [
+     ["C","C##","C####","C#####","C#######","C#########","C#########","C############"]
+   ];
+    var piano = Synth.createInstrument('piano');
+    
+		function updateScreen(){
+			key=document.getElementById("Keys").value;
+			mode=document.getElementById("Mode").value;
+			chdnum=document.getElementById("ChrdNum").value;
+      endng=document.getElementById("Ending").value;
+			chords = "";
+			chor();
+			if (whatkey == 99){
+				return;
+			}
+      
+			document.getElementById('textarea').value = chords;
+
+		}
+		function chor(){
+			tim = modenum(mode);
+			whatkey = findkey(tim);
+			if (whatkey == 99){
+				chords = ("N-N-N-NOT FOUND");
+				return;
+			}
+			chords += ckey[whatkey][tim] + moede(tim);
+			notes(whatkey, tim);
+      playnotes();
+      /*
+      soundnotes = chordformation(moede(tim), start);
+     piano.play(soundnotes[0], 4, 2);
+     piano.play(soundnotes[1], 4, 2);    
+     piano.play(soundnotes[2], 4, 2); 
+      if (moede(tim) == " (Dom 7th)\n"){
+        piano.play(soundnotes[3], 4, 2)
+      }
+      */
+    }
+  
+// sleep(2000).then(() => {  });
+  //plays the notes of the chords that are made
+ function playnotes(){
+   start = startingnote(whatkey, tim);
+
+   soundnotes = chordformation(moede(tim), start);
+    piano.play(soundnotes[0], 4, 2);
+    piano.play(soundnotes[1], 4, 2);    
+    piano.play(soundnotes[2], 4, 2); 
+      if (moede(tim) == " (Dom 7th)\n"){
+        piano.play(soundnotes[3], 4, 2)
+      }
+   for (i = 0; i < trackchords.length; i++){
+     //by the time it executes the function the for loop is over
+//trackchords is a number that represents the number of the chord in the key -1
+    
+     //modes are currently off, the notes in the ending and the final chords isn't playing?
+     //need to fix everything after IAC root because its playing the wrong notes 
+     //seems to be something related to flats?
+   
+     delayfunc(i);
+     
+   }
+   
+   return;
+ }
+
+  function delayfunc(i){
+    setTimeout(() => { trackchordstwo = trackchordstochromsh();}, ((i+1)* 1000));
+
+    if (endng == "mPC"){
+      trackchords[(trackchords.length) -3] = 0;
+      trackchords[(trackchords.length) -2] = 1;
+    }
+   
+     setTimeout(() => {soundnotes = chordformation(moede(trackchords[i]), trackchordstwo[i]);}, ((i+1)* 1000));
+    setTimeout(() => {piano.play(soundnotes[0], 4, 2);}, ((i+1)* 1000));
+    setTimeout(() => {piano.play(soundnotes[1], 4, 2);}, ((i+1)* 1000));
+    setTimeout(() => {piano.play(soundnotes[2], 4, 2);}, ((i+1)* 1000));
+
+   //  setTimeout(() => {alert(soundnotes);}, ((i+1)* 1000));
+        
+      if (moede(tim) == " (Dom 7th)\n"){
+    setTimeout(() => {piano.play(soundnotes[3], 4, 2);}, ((i+1)* 1000));
+      
+   }
+  }
+    
+      //piano.play('C#', 4, 2);
+
+//turns number in track chords to number in chromsh
+ function trackchordstochromsh(){
+    newtrackchords = [];
+  for (i = 0; i < trackchords.length; i++){
+  
+    for (j = 0; j<chromsh.length; j++){
+    
+     if (ckey[whatkey][trackchords[i]] == chromsh[j]){
+      newtrackchords.push(j);
+       
+       break;
+     }
+   }
+  }
+   //alert(trackchords);
+   return newtrackchords;
+ }
+
+  //returns an int that represents the the stating note in the chromsh array, imputs are the places in the array
+    function startingnote(temp, temp2){
+      var temp3 = ckey[whatkey][tim];
+      for ( i = 0; i < chromsh.length; i++){
+        if (temp3 == chromsh [i] ){
+          temp3 = i;
+          return temp3;
+        }
+      }
+      return;
+    }
+    //makes an array for the the notes of the chord that is imput 
+  function chordformation(quality, startnote){
+    var notes = [];
+   
+    if (quality == " (Major)\n"){
+      
+        notes.push(chromsh[startnote]);
+        notes.push(chromsh[startnote + 4]);
+        notes.push(chromsh[startnote + 7]);
+      
+    } else if (quality == " (Minor)\n"){
+      
+        notes.push(chromsh[startnote]);
+        notes.push(chromsh[startnote + 3]);
+        notes.push(chromsh[startnote + 7]);
+      
+    }else if (quality ==  " (Dom 7th)\n"){
+    
+        notes.push(chromsh[startnote]);
+        notes.push(chromsh[startnote + 4]);
+        notes.push(chromsh[startnote + 7]);
+        notes.push(chromsh[startnote + 10]);
+      
+    }else if ((quality == " (Dim)\n" ) || (quality == "# (Dim)\n")){
+      
+        notes.push(chromsh[startnote]);
+        notes.push(chromsh[startnote + 3]);
+        notes.push(chromsh[startnote + 6]);
+      
+    }
+    return notes;
+  }
+  
+ /* would get wither sharp of flat key function shafl(tempkey){
+    if (tempkey > 7){
+      return "flat";
+    }
+    else return "sharp";
+  }
+
+		}
+code
+    */
+    //returns a number that coresponds to the mode that the key is in
+		function modenum(type){
+			if (type== "Major/Ionian"){
+				return 0;
+			}else if (type== "Dorian"){
+				return 1;
+			}else if (type== "Phrygian"){
+				return 2;
+			}else if (type== "Lydian"){
+				return 3;
+			}else if (type== "Mixolydian"){
+				return 4;
+			}else if (type== "Natural Minor/Aeolian" || type == "Harmonic Minor" || type == "Melodic Minor"){
+				return 5;
+			}else if (type== "Locrian"){
+				return 6;
+			}
+		}
+    //returns an int that tells the program where the key is in the 2d array
+		function findkey(ran){
+			placehold = 14;
+			if (ran == 0){
+					while(placehold >= 0){
+				if (key == ckey[placehold][0]){
+					return placehold;
+			}
+				placehold -= 1;
+			}
+			} else if (ran == 1) {
+					while(placehold >= 0){
+				if (key == ckey[placehold][1]){
+					return placehold;
+			}
+				placehold -= 1;
+			}
+			}else if (ran == 2) {
+					while(placehold >= 0){
+				if (key == ckey[placehold][2]){
+					return placehold;
+			}
+				placehold -= 1;
+			}
+			} else if (ran == 3) {
+					while(placehold >= 0){
+				if (key == ckey[placehold][3]){
+					return placehold;
+			}
+				placehold -= 1;
+			}
+			} else if (ran == 4) {
+					while(placehold >= 0){
+				if (key == ckey[placehold][4]){
+					return placehold;
+			}
+				placehold -= 1;
+			}
+			} else if (ran == 5){
+					while(placehold >= 0){
+				if (key == ckey[placehold][5]){
+				return placehold;
+			}
+				placehold -= 1;
+			}
+			} else if (ran == 6){
+					while(placehold >= 0){
+				if (key == ckey[placehold][6]){
+				return placehold;
+			}
+				placehold -= 1;
+			}
+			} 
+      return 99;
+  
+		}
+    //returns a string that contains the mode
+		function moede(ran){
+			if (ran == 0 || ((mode == "Harmonic Minor" || mode =="Melodic Minor")&& ran == 2) || (mode == "Melodic Minor" && ran == 1)){
+        return " (Major)\n";
+      } else if ((mode == "Melodic Minor" && ran == 4) || (ran == 4 && mode == "Harmonic Minor") ||  (ran == 3 && ( mode =="Melodic Minor"))){
+        return "# (Dim)\n"
+      }else if (ran == 1 ) {
+        return " (Minor)\n";
+      }else if (ran == 2) {
+        return  " (Minor)\n";
+      } else if (ran == 3) {
+        return " (Major)\n";
+      } else if (ran == 4) {
+        return " (Dom 7th)\n";
+      } else if (ran == 5 || ( mode  == "Melodic Minor" && ran != 5)){
+        return" (Minor)\n";
+      } else {
+        return " (Dim)\n";
+      }
+		}
+    //puts the chords together and does the endings
+		function notes(keyy, tim2){
+    trackchords = [];
+    tempchdnum = chdnum;
+      if (endng == "Random Ending"){
+        while (tempchdnum -1 >0){
+				rand = ((Math.floor(Math.random() *7)) + tim2)%7;
+				chords += ckey[keyy][rand] + moede(rand);
+        trackchords.push(rand);
+				tempchdnum -= 1;
+			}
+        
+      } else if (tempchdnum < 3){
+        chords = ("N-N-NOT FOUND");
+        return;
+        
+      } else if (endng == "PAC") {
+        while (tempchdnum -3 >0){
+				rand = ((Math.floor(Math.random() *7)) + tim2)%7;
+				chords += ckey[keyy][rand] + moede(rand);
+        trackchords.push(rand);
+				tempchdnum -= 1;
+			}
+        chords += ckey[keyy][(4 + tim2)%7] + moede((4 + tim2)%7);
+        chords += ckey[keyy][(0 + tim2)%7] + moede((0 + tim2)%7);
+        trackchords.push((4 + tim2)%7);
+        trackchords.push((0 + tim2)%7);
+      }else if (endng == "IAC (Root Position)") {
+        while (tempchdnum -3 >0){
+				rand =((Math.floor(Math.random() *7)) + tim2)%7;
+				chords += ckey[keyy][rand] + moede(rand);
+        trackchords.push(rand);
+				tempchdnum -= 1;
+			}
+        chords += ckey[keyy][(4 + tim2)%7] + moede((4 + tim2)%7);
+        chords += ckey[keyy][(0 + tim2)%7] + moede((0 + tim2)%7) + "(No tonic in Sop)";
+        trackchords.push((4+ tim2)%7);
+        trackchords.push((0+ tim2)%7);
+      } else if (endng == "IAC (Leading Tone)") {
+        while (tempchdnum -3 >0){
+				rand = ((Math.floor(Math.random() *7)) + tim2)%7;
+				chords += ckey[keyy][rand] + moede(rand);
+        trackchords.push(rand);
+				tempchdnum -= 1;
+			}
+        chords += ckey[keyy][(6 + tim2)%7] + " (Dim)\n";
+        chords += ckey[keyy][(0 + tim2)%7] + moede((0 + tim2)%7);
+        trackchords.push((6 + tim2)%7);
+        
+        trackchords.push((0 + tim2)%7);
+      }else if (endng == "HC") {
+        while (tempchdnum -2 >0){
+				rand = ((Math.floor(Math.random() *7)) + tim2)%7;
+				chords += ckey[keyy][rand] + moede(rand);
+        trackchords.push(rand);
+				tempchdnum -= 1;
+			}
+       
+        chords += ckey[keyy][(4 + tim2)%7] + moede((4 + tim2)%7);
+        trackchords.push((4 + tim2)%7);
+      }else if (endng == "PC") {
+        while (tempchdnum -3 >0){
+				rand = ((Math.floor(Math.random() *7)) + tim2)%7;
+				chords += ckey[keyy][rand] + moede(rand);
+        trackchords.push(rand);
+				tempchdnum -= 1;
+			}
+        chords += ckey[keyy][(3 + tim2)%7] + moede((3 + tim2)%7);
+        chords += ckey[keyy][(0 + tim2)%7] + moede((0 + tim2)%7);
+        trackchords.push((3 + tim2)%7);
+        trackchords.push((0 + tim2)%7);
+      }else if (endng == "mPC") {
+        while (tempchdnum -4 >0){
+				rand = ((Math.floor(Math.random() *7)) + tim2)%7;
+				chords += ckey[keyy][rand] + moede(rand);
+        trackchords.push(rand);
+          
+				tempchdnum -= 1;
+			}
+        chords += ckey[keyy][(3 + tim2)%7] + " (Major)\n";
+        chords += ckey[keyy][(3 + tim2)%7] + " (Minor)\n";
+        chords += ckey[keyy][(0 + tim2)%7] + moede((0 + tim2)%7);
+        trackchords.push((3 + tim2)%7);
+        trackchords.push((3 + tim2)%7);
+        trackchords.push((0 + tim2)%7);
+      }else if (endng == "DC") {
+        while (tempchdnum -3 >0){
+				rand = ((Math.floor(Math.random() *7)) + tim2)%7;
+				chords += ckey[keyy][rand] + moede(rand);
+        trackchords.push(rand);
+				tempchdnum -= 1;
+			}
+        chords += ckey[keyy][(4 + tim2)%7] + moede((4 + tim2)%7);
+        chords += ckey[keyy][(5 + tim2)%7] + moede((5 + tim2)%7);
+        trackchords.push((4 + tim2)%7);
+        trackchords.push((5 + tim2)%7);
+      }
+      
+			
+		}
+	</script>
+  <style>
+    body{
+      background-color: #EDE8F5;
+    }
+  </style>
+  
+</body>
+
+</html>
