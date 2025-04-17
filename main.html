@@ -187,11 +187,74 @@ console.log("Hello!");
       ["A","A#", "Bb","B","B#","Cb", "C","C#","Db","D","D#","Eb","E","E#","Fb","F","F#","Gb","G","G#", "Ab"],
       ["C"]
     ];
-   var memescales = [
-     ["C","C##","C####","C#####","C#######","C#########","C#########","C############"]
-   ];
-    var piano = Synth.createInstrument('piano');
-    
+   
+    const synth = new AudioSynth();
+    synth.setVolume(0.5);
+    const piano = synth.createInstrument('piano');
+
+    //map of intervals
+    const intervals = {
+          "": [0, 4, 7],         // Major
+          "m": [0, 3, 7],        // Minor
+          "7": [0, 4, 7, 10],    // Dominant 7th
+          "m7": [0, 3, 7, 10],   // Minor 7th
+          "maj7": [0, 4, 7, 11], // Major 7th
+          "dim": [0, 3, 6],      // Diminished
+          "aug": [0, 4, 8],      // Augmented
+      };
+    //map of cadences
+      const cadenceOptions = {
+          'Perfect': ['V', 'I'],
+          'Plagal': ['IV', 'I'],
+          'Deceptive': ['V', 'vi'],
+          'Half': ['I', 'V'],
+          'Minor Plagal': ['iv', 'i'],
+          'Imperfect Authentic': ['vii°', 'I']
+      };
+
+      //map of modes
+      const modes = {
+          'Ionian (Major)': [0, 2, 4, 5, 7, 9, 11],
+          'Dorian': [0, 2, 3, 5, 7, 9, 10],
+          'Phrygian': [0, 1, 3, 5, 7, 8, 10],
+          'Lydian': [0, 2, 4, 6, 7, 9, 11],
+          'Mixolydian': [0, 2, 4, 5, 7, 9, 10],
+          'Aeolian (Minor)': [0, 2, 3, 5, 7, 8, 10],
+          'Locrian': [0, 1, 3, 5, 6, 8, 10]
+      };
+
+      //map of notes
+      const noteMap = {
+          "C": 0, "C#": 1, "Db": 1, "D": 2, "D#": 3, "Eb": 3,
+          "E": 4, "F": 5, "F#": 6, "Gb": 6, "G": 7, "G#": 8, "Ab": 8,
+          "A": 9, "A#": 10, "Bb": 10, "B": 11
+      };
+
+      //map of chord types
+      const chordTypes = {
+        'I': '', 'ii': 'm', 'iii': 'm', 'IV': '', 'V': '', 'vi': 'm', 'vii°': 'dim','i': 'm', 'iv': 'm', 'v': 'm', 'vi°': 'dim', 'vii': 'dim'
+      };
+
+      // map of all of the keys with sharps and flats 
+      const ckeys = {
+          'C': ['C', 'D', 'E', 'F', 'G', 'A', 'B'],
+          'G': ['G', 'A', 'B', 'C', 'D', 'E', 'F#'],
+          'D': ['D', 'E', 'F#', 'G', 'A', 'B', 'C#'],
+          'A': ['A', 'B', 'C#', 'D', 'E', 'F#', 'G#'],
+          'E': ['E', 'F#', 'G#', 'A', 'B', 'C#', 'D#'],
+          'B': ['B', 'C#', 'D#', 'E', 'F#', 'G#', 'A#'],
+          'F#': ['F#', 'G#', 'A#', 'B', 'C#', 'D#', 'E#'],
+          'F': ['F', 'G', 'A', 'Bb', 'C', 'D', 'E'],
+          'Bb': ['Bb', 'C', 'D', 'Eb', 'F', 'G', 'A'],
+          'Eb': ['Eb', 'F', 'G', 'Ab', 'Bb', 'C', 'D'],
+          'Ab': ['Ab', 'Bb', 'C', 'Db', 'Eb', 'F', 'G'],
+          'Db': ['Db', 'Eb', 'F', 'Gb', 'Ab', 'Bb', 'C'],
+          'Gb': ['Gb', 'Ab', 'Bb', 'Cb', 'Db', 'Eb', 'F'],
+          'Cb': ['Cb', 'Db', 'Eb', 'Fb', 'Gb', 'Ab', 'Bb']
+      };
+
+      const degrees = ['I', 'ii', 'iii', 'IV', 'V', 'vi', 'vii°'];
+
 		function updateScreen(){
 			key=document.getElementById("Keys").value;
 			mode=document.getElementById("Mode").value;
